@@ -69,9 +69,21 @@ void store(FILE *file_paths, FILE *vdfile)
 
 
 /*..	2. Storing Meta data sequences ..*/
-	
-		//len_in_byte contains Number of characters in File Name	
+		//Removing Path from file name : ../Folder/file_name -> file_name
+		int fname_start = 0;
+
 		len_in_byte = strlen(buffer);
+		for(int i = 0; i < len_in_byte; i++)
+		{
+			if(buffer[i] == '/')
+			{
+				fname_start = i + 1;
+			}
+		}
+		unsigned char* fname = (unsigned char*)(buffer + fname_start);
+		len_in_byte -= fname_start;
+
+		//len_in_byte contains Number of characters in File Name	
 		bits_from_left += store_length_seq(bits_from_left, len_in_byte, vdfile);
 
 		
@@ -79,7 +91,7 @@ void store(FILE *file_paths, FILE *vdfile)
 		bytes_from_right += len_in_byte;
 
 		//storing File Name from Buffer to vdfile Before actual file data.	
-		store_array_to_file(buffer, len_in_byte, vdfile, (-1 * bytes_from_right));
+		store_array_to_file(fname, len_in_byte, vdfile, (-1 * bytes_from_right));
 
 /*.. 	DONE STORING  	..*/
 
